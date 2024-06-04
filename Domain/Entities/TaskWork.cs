@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Domain.Entities
 {
-    public class Task
+    public class TaskWork
     {
         public Guid Id { get; set; }
         public Guid SprintId { get; set; }

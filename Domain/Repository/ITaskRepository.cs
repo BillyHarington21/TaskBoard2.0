@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Domain.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,10 +9,10 @@ namespace Domain.Repository
 {
     public interface ITaskRepository
     {
-        Task<Task> GetByIdAsync(Guid id);
-        Task<IEnumerable<Task>> GetAllAsync();
-        Task AddAsync(Task task);
-        Task UpdateAsync(Task task);
+        Task<TaskWork> GetByIdAsync(Guid id);
+        Task<IEnumerable<TaskWork>> GetAllAsync();
+        Task AddAsync(TaskWork task);
+        Task UpdateAsync(TaskWork task);
         Task DeleteAsync(Guid id);
     }
 }

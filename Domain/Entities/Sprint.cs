@@ -16,6 +16,6 @@ namespace Domain.Entities
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public ICollection<User> Users { get; set; }
-        public ICollection<Task> Tasks { get; set; }
+        public ICollection<TaskWork> Tasks { get; set; }
     }
 }

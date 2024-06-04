@@ -12,6 +12,6 @@ namespace Domain.Entities
         public string Email { get; set; }
         public string PasswordHash { get; set; }
         public ICollection<Role> Roles { get; set; }
-        public ICollection<Task> Tasks { get; set; }
+        public ICollection<TaskWork> Tasks { get; set; }
     }
 }
