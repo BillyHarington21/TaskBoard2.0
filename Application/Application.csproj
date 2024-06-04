@@ -7,6 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Domain\Domain.csproj" />
+    <ProjectReference Include="..\Infrastracture\Infrastracture.csproj" />
     <ProjectReference Include="..\TaskBoard2.0\TaskBoard2.0.csproj" />
   </ItemGroup>
 
