@@ -1,7 +1,18 @@
-var builder = WebApplication.CreateBuilder(args);
+using Application.Interfaces;
+using Application.Services;
+using Domain.Repository;
+using Infrastracture.Data;
+using Infrastracture.RealisationRepository;
+using Microsoft.EntityFrameworkCore;
 
+var builder = WebApplication.CreateBuilder(args);
+var ConnectionStrings = builder.Configuration.GetConnectionString("default");
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddDbContext<ApplicationDbContext>(
+    options => options.UseSqlServer(ConnectionStrings));
+builder.Services.AddScoped<IAuthorisationService, AuthorisationService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 var app = builder.Build();
 

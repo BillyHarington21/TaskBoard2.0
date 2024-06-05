@@ -11,11 +11,11 @@ using System.Threading.Tasks;
 
 namespace Application.Services
 {
-    public class AutorisationService : IAutorisationService
+    public class AuthorisationService : IAuthorisationService
     {
         private readonly IUserRepository _userRepository;
 
-        public AutorisationService(IUserRepository userRepository)
+        public AuthorisationService(IUserRepository userRepository)
         {
             _userRepository = userRepository;
         }
@@ -50,7 +50,7 @@ namespace Application.Services
             return new LoginResponse { Email = user.Email };
         }
 
-        public async Task<ForgotPasswordResponse> ForgotPasswordAsync(ForgotPasswordRequest request)
+        public async Task<ForgotPasswordResponse> ForgotPasswordAsync(ForgotPasswordRequest request, string newPassword)
         {
             var user = await _userRepository.GetByEmailAsync(request.Email);
             if (user == null)
@@ -58,7 +58,6 @@ namespace Application.Services
                 throw new ArgumentException("User not found.");
             }
 
-            var newPassword = "newpassword"; // For simplicity, using a fixed new password
             user.PasswordHash = newPassword;
 
             await _userRepository.UpdateAsync(user);
