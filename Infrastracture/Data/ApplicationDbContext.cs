@@ -1,10 +1,5 @@
 ﻿using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infrastracture.Data
 {
@@ -14,7 +9,7 @@ namespace Infrastracture.Data
         public DbSet<Role> Roles { get; set; }
         public DbSet<Project> Projects { get; set; }
         public DbSet<Sprint> Sprints { get; set; }
-        public DbSet<Domain.Entities.TaskWork> Tasks { get; set; }
+        public DbSet<TaskWork> Tasks { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
