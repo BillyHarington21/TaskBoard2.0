@@ -49,6 +49,7 @@ namespace Application.DTO
         [Required]
         [EmailAddress]
         public string Email { get; set; }
+        public string NewPassword { get; set; }
     }
 
     public class ForgotPasswordResponse

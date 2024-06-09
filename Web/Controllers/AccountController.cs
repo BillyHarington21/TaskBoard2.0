@@ -82,6 +82,12 @@ namespace Web.Controllers
         {
             if (ModelState.IsValid)
             {
+                if (model.NewPassword != model.ConfirmNewPassword)
+                {
+                    ModelState.AddModelError(string.Empty, "New password and confirmation password do not match.");
+                    return View(model);
+                }
+
                 var dto = new ForgotPasswordRequest
                 {
                     Email = model.Email
@@ -90,7 +96,7 @@ namespace Web.Controllers
                 try
                 {
                     var response = await _authorisationService.ForgotPasswordAsync(dto, model.NewPassword);
-                    ViewBag.Message = "Your password has been successfully reset.";
+                    return RedirectToAction("Login");
                 }
                 catch
                 {

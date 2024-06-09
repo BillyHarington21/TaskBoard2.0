@@ -58,11 +58,11 @@ namespace Application.Services
                 throw new ArgumentException("User not found.");
             }
 
-            user.PasswordHash = newPassword;
+            user.PasswordHash = newPassword; 
 
             await _userRepository.UpdateAsync(user);
 
-            return new ForgotPasswordResponse { Email = user.Email, NewPassword = newPassword };
+            return new ForgotPasswordResponse { Email = user.Email };
         }
     } 
 }
