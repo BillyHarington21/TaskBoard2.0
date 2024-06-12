@@ -14,6 +14,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(
     options => options.UseSqlServer(ConnectionStrings));
 builder.Services.AddScoped<IAuthorisationService, AuthorisationService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 
 builder.Services.AddSession(options =>
 {

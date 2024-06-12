@@ -11,8 +11,8 @@ namespace Domain.Repository
     {
         Task<Project> GetByIdAsync(Guid id);
         Task<IEnumerable<Project>> GetAllAsync();
-        System.Threading.Tasks.Task AddAsync(Project project);
-        System.Threading.Tasks.Task UpdateAsync(Project project);
-        System.Threading.Tasks.Task DeleteAsync(Guid id);
+        Task AddAsync(Project project);
+        Task UpdateAsync(Project project);
+        Task DeleteAsync(Guid id);
     }
 }

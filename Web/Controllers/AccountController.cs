@@ -1,6 +1,8 @@
 ﻿using Application.DTO;
 using Application.Interfaces;
 using Application.Services;
+using Domain.Repository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Web.Models;
 
@@ -9,12 +11,14 @@ namespace Web.Controllers
     public class AccountController : Controller
     {
         private readonly IAuthorisationService _authorisationService;
+        private readonly IUserRepository _userRepository;
 
-        public AccountController(IAuthorisationService authorisationService) 
+        public AccountController(IAuthorisationService authorisationService, IUserRepository userRepository)
         {
             _authorisationService = authorisationService;
+            _userRepository = userRepository;
         }
-        
+
         public IActionResult Register()
         {
             return View();
@@ -31,7 +35,8 @@ namespace Web.Controllers
                     
                     Email = model.Email,
                     Password = model.Password,
-                    ConfirmPassword = model.ConfirmPassword
+                    ConfirmPassword = model.ConfirmPassword,
+                    Role = model.Role
                 };
 
                 var response = await _authorisationService.RegisterAsync(dto);
@@ -112,6 +117,46 @@ namespace Web.Controllers
         {
             HttpContext.Session.Clear();
             return RedirectToAction("Login", "Account");
+        }
+               
+
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> ManageUsers()
+        {
+            var users = await _userRepository.GetAllAsync();
+            var model = users.Select(u => new UserViewModel
+            {
+                Id = u.Id,
+                Email = u.Email,
+                Role = u.Role.Name,
+                IsBlocked = u.IsBlocked
+            }).ToList();
+
+            return View(model);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        public async Task<IActionResult> AssignRole(Guid userId, string roleName)
+        {
+            await _authorisationService.AssignRoleAsync(userId, roleName);
+            return RedirectToAction("ManageUsers");
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        public async Task<IActionResult> BlockUser(Guid userId)
+        {
+            await _authorisationService.BlockUserAsync(userId);
+            return RedirectToAction("ManageUsers");
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        public async Task<IActionResult> UnblockUser(Guid userId)
+        {
+            await _authorisationService.UnblockUserAsync(userId);
+            return RedirectToAction("ManageUsers");
         }
     }
 }

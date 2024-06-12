@@ -12,5 +12,8 @@ namespace Application.Interfaces
         Task<RegisterResponse> RegisterAsync(RegisterRequest request);
         Task<LoginResponse> LoginAsync(LoginRequest request);
         Task<ForgotPasswordResponse> ForgotPasswordAsync(ForgotPasswordRequest request, string NewPassword );
+        Task AssignRoleAsync(Guid userId, string roleName);
+        Task BlockUserAsync(Guid userId);
+        Task UnblockUserAsync(Guid userId);
     }
 }

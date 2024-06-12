@@ -9,8 +9,7 @@ namespace Application.DTO
 {
     public class RegisterRequest
     {
-        [Required]
-        public string Name { get; set; }
+        
         [Required]
         [EmailAddress]
         public string Email { get; set; }
@@ -21,6 +20,7 @@ namespace Application.DTO
         [DataType(DataType.Password)]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
+        public string Role { get; set; }
     }
 
     public class RegisterResponse

@@ -16,7 +16,19 @@ namespace Infrastracture.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            // Определение связей между сущностями и дополнительных настроек
+
+            modelBuilder.Entity<Role>().HasData(
+                new Role { Id = Guid.NewGuid(), Name = "Admin" },
+                new Role { Id = Guid.NewGuid(), Name = "Manager" },
+                new Role { Id = Guid.NewGuid(), Name = "User" }
+     );
+
+            modelBuilder.Entity<User>()
+                .HasOne(u => u.Role)
+                .WithMany(r => r.Users)
+                .HasForeignKey(u => u.RoleId);
+
+
         }
     }
 }

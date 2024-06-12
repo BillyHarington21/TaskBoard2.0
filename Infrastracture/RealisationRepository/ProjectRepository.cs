@@ -29,19 +29,19 @@ namespace Infrastracture.RealisationRepository
             return await _context.Projects.ToListAsync();
         }
 
-        public async System.Threading.Tasks.Task AddAsync(Project project)
+        public async Task AddAsync(Project project)
         {
             _context.Projects.Add(project);
             await _context.SaveChangesAsync();
         }
 
-        public async System.Threading.Tasks.Task UpdateAsync(Project project)
+        public async Task UpdateAsync(Project project)
         {
             _context.Projects.Update(project);
             await _context.SaveChangesAsync();
         }
 
-        public async System.Threading.Tasks.Task DeleteAsync(Guid id)
+        public async Task DeleteAsync(Guid id)
         {
             var project = await _context.Projects.FindAsync(id);
             if (project != null)

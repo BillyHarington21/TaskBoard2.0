@@ -1,0 +1,49 @@
+﻿@model List<Web.Models.UserViewModel>
+
+<h2>Manage Users</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Blocked</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.Email</td>
+                <td>@user.Role</td>
+                <td>@user.IsBlocked</td>
+                <td>
+                    <form asp-action="AssignRole" method="post" class="d-inline">
+                        <input type="hidden" name="userId" value="@user.Id" />
+                        <select name="roleName" class="form-control d-inline w-auto">
+                            <option value="User" selected>User</option>
+                            <option value="Manager">Manager</option>
+                            <option value="Admin">Admin</option>
+                        </select>
+                        <button type="submit" class="btn btn-primary">Assign Role</button>
+                    </form>
+                    @if (user.IsBlocked)
+                    {
+                        <form asp-action="UnblockUser" method="post" class="d-inline">
+                            <input type="hidden" name="userId" value="@user.Id" />
+                            <button type="submit" class="btn btn-warning">Unblock</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <form asp-action="BlockUser" method="post" class="d-inline">
+                            <input type="hidden" name="userId" value="@user.Id" />
+                            <button type="submit" class="btn btn-danger">Block</button>
+                        </form>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

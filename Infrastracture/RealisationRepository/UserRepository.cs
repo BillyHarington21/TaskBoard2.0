@@ -2,11 +2,6 @@
 using Domain.Repository;
 using Infrastracture.Data;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infrastracture.RealisationRepository
 {
@@ -39,6 +34,10 @@ namespace Infrastracture.RealisationRepository
         {
             _context.Users.Update(user);
             await _context.SaveChangesAsync();
+        }
+        public async Task<IEnumerable<User>> GetAllAsync()
+        {
+            return await _context.Users.Include(u => u.Role).ToListAsync();
         }
     }
 }
