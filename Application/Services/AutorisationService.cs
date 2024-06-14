@@ -27,20 +27,17 @@ namespace Application.Services
             if (existingUser != null)
             {
                 throw new ArgumentException("User already exists.");
-            }
-
-            var userRole = await _roleRepository.GetByNameAsync("User");
-            if (userRole == null)
-            {
-                throw new InvalidOperationException("Default role 'User' not found.");
-            }
+            }            
+            
+            var RoleId = _roleRepository.GetRoleIdByNameAsync("User");
 
             var user = new User
             {
                 Id = Guid.NewGuid(),
                 Email = request.Email,
-                PasswordHash =request.Password, 
-                RoleId = userRole.Id 
+                PasswordHash =request.Password,
+                RoleId = await RoleId,
+                IsBlocked = false
             };
 
             await _userRepository.AddAsync(user);

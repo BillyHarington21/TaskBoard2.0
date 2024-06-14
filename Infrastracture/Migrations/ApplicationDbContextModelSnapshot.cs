@@ -58,17 +58,17 @@ namespace Infrastracture.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("7c6cbc91-c2b8-4e91-9ebb-8a968066fc38"),
+                            Id = new Guid("2576eb02-fa3e-4425-b559-5d1d3850a320"),
                             Name = "Admin"
                         },
                         new
                         {
-                            Id = new Guid("7f141939-8d7a-452a-80b6-c68312ed1e8d"),
+                            Id = new Guid("01547ccb-69cc-4042-9927-a5d895b007c9"),
                             Name = "Manager"
                         },
                         new
                         {
-                            Id = new Guid("832cbaa7-1b96-4804-a640-6a7fa90553c2"),
+                            Id = new Guid("7a9905cc-9a4f-4a3d-b179-6400c8c105d5"),
                             Name = "User"
                         });
                 });
@@ -154,18 +154,28 @@ namespace Infrastracture.Migrations
                     b.Property<Guid?>("SprintId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("TaskWorkId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
 
                     b.HasIndex("RoleId");
 
                     b.HasIndex("SprintId");
 
-                    b.HasIndex("TaskWorkId");
-
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("TaskWorkUser", b =>
+                {
+                    b.Property<Guid>("TasksId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("UsersId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("TasksId", "UsersId");
+
+                    b.HasIndex("UsersId");
+
+                    b.ToTable("TaskWorkUser");
                 });
 
             modelBuilder.Entity("Domain.Entities.Sprint", b =>
@@ -202,11 +212,22 @@ namespace Infrastracture.Migrations
                         .WithMany("Users")
                         .HasForeignKey("SprintId");
 
-                    b.HasOne("Domain.Entities.TaskWork", null)
-                        .WithMany("Users")
-                        .HasForeignKey("TaskWorkId");
-
                     b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("TaskWorkUser", b =>
+                {
+                    b.HasOne("Domain.Entities.TaskWork", null)
+                        .WithMany()
+                        .HasForeignKey("TasksId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UsersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Domain.Entities.Project", b =>
@@ -223,11 +244,6 @@ namespace Infrastracture.Migrations
                 {
                     b.Navigation("Tasks");
 
-                    b.Navigation("Users");
-                });
-
-            modelBuilder.Entity("Domain.Entities.TaskWork", b =>
-                {
                     b.Navigation("Users");
                 });
 #pragma warning restore 612, 618

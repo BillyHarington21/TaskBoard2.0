@@ -36,11 +36,11 @@ namespace Web.Controllers
                     Email = model.Email,
                     Password = model.Password,
                     ConfirmPassword = model.ConfirmPassword,
-                    Role = model.Role
+                    
                 };
 
                 var response = await _authorisationService.RegisterAsync(dto);
-                return RedirectToAction("Login");
+                return RedirectToAction("Login", "Account");
             }
             return View(model);
         }

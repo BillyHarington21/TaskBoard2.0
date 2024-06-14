@@ -18,5 +18,16 @@ namespace Infrastracture.RealisationRepository
         {
             return await _context.Roles.SingleOrDefaultAsync(r => r.Name == roleName);
         }
+
+        public async Task<Guid> GetRoleIdByNameAsync(string roleName)
+        {
+            var role = await _context.Roles.FirstOrDefaultAsync(r => r.Name == roleName);
+            if (role == null)
+            {
+                throw new Exception($"Role '{roleName}' not found");
+            }
+            return role.Id;
+        }
     }
+
 }

@@ -17,18 +17,16 @@ namespace Infrastracture.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Role>().HasData(
-                new Role { Id = Guid.NewGuid(), Name = "Admin" },
-                new Role { Id = Guid.NewGuid(), Name = "Manager" },
-                new Role { Id = Guid.NewGuid(), Name = "User" }
-     );
-
             modelBuilder.Entity<User>()
                 .HasOne(u => u.Role)
                 .WithMany(r => r.Users)
                 .HasForeignKey(u => u.RoleId);
 
-
+            modelBuilder.Entity<Role>().HasData(
+                new Role { Id = Guid.NewGuid(), Name = "Admin" },
+                new Role { Id = Guid.NewGuid(), Name = "Manager" },
+                new Role { Id = Guid.NewGuid(), Name = "User" }
+            );
         }
     }
 }
