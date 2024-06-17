@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Domain.Entities;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -37,11 +38,15 @@ namespace Application.DTO
         [Required]
         [DataType(DataType.Password)]
         public string Password { get; set; }
+        public bool IsBlocked { get; set; } 
+        public Guid RoleId { get; set; }
     }
 
     public class LoginResponse
     {
         public string Email { get; set; }
+        public Guid RoleId { get; set; }
+        public bool IsBlocked { get; set; }
     }
 
     public class ForgotPasswordRequest

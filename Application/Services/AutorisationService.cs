@@ -48,12 +48,12 @@ namespace Application.Services
         public async Task<LoginResponse> LoginAsync(LoginRequest request)
         {
             var user = await _userRepository.GetByEmailAsync(request.Email);
-            if (user == null || user.PasswordHash != request.Password)
+            if (user == null || user.PasswordHash != request.Password || user.IsBlocked != false)
             {
                 throw new UnauthorizedAccessException("Invalid credentials.");
             }
 
-            return new LoginResponse { Email = user.Email };
+            return new LoginResponse { Email = user.Email, RoleId = user.RoleId, };
         }
 
         public async Task<ForgotPasswordResponse> ForgotPasswordAsync(ForgotPasswordRequest request, string newPassword)

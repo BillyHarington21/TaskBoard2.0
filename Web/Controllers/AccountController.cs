@@ -3,6 +3,7 @@ using Application.Interfaces;
 using Application.Services;
 using Domain.Repository;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Web.Models;
 
@@ -58,14 +59,28 @@ namespace Web.Controllers
                 var dto = new LoginRequest
                 {
                     Email = model.Email,
-                    Password = model.Password
+                    Password = model.Password,
+                    IsBlocked = model.IsBlocked
+
                 };
 
                 try
                 {
                     var response = await _authorisationService.LoginAsync(dto);
-                    HttpContext.Session.SetString("UserEmail", response.Email);
-                    return RedirectToAction("Index", "Home");
+                    if (response != null )
+                    {
+                        HttpContext.Session.SetString("UserEmail", response.Email);
+                        HttpContext.Session.SetString("UserRole", response.RoleId.ToString()); 
+                        return RedirectToAction("Index", "Home");
+                    }
+                    else if ( response.IsBlocked == true )
+                    {
+                        ModelState.AddModelError(string.Empty, "Your account has been blocked.");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    }
                 }
                 catch
                 {
@@ -120,7 +135,7 @@ namespace Web.Controllers
         }
                
 
-        [Authorize(Roles = "Admin")]
+        
         public async Task<IActionResult> ManageUsers()
         {
             var users = await _userRepository.GetAllAsync();
@@ -135,7 +150,7 @@ namespace Web.Controllers
             return View(model);
         }
 
-        [Authorize(Roles = "Admin")]
+        
         [HttpPost]
         public async Task<IActionResult> AssignRole(Guid userId, string roleName)
         {
@@ -143,7 +158,7 @@ namespace Web.Controllers
             return RedirectToAction("ManageUsers");
         }
 
-        [Authorize(Roles = "Admin")]
+        
         [HttpPost]
         public async Task<IActionResult> BlockUser(Guid userId)
         {
@@ -151,7 +166,7 @@ namespace Web.Controllers
             return RedirectToAction("ManageUsers");
         }
 
-        [Authorize(Roles = "Admin")]
+        
         [HttpPost]
         public async Task<IActionResult> UnblockUser(Guid userId)
         {
