@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Web.Models
+namespace Web.Models.AccountModels
 {
-    public class ForgotPasswordViewModel
+    public class LoginViewModel
     {
         [Required]
         [EmailAddress]
@@ -10,8 +10,7 @@ namespace Web.Models
 
         [Required]
         [DataType(DataType.Password)]
-        public string NewPassword { get; set; }
-        [Required]
-        public string ConfirmNewPassword { get; set; }
+        public string Password { get; set; }
+        public bool IsBlocked { get; set; }
     }
 }

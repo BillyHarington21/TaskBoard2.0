@@ -22,11 +22,7 @@ namespace Infrastracture.Data
                 .WithMany(r => r.Users)
                 .HasForeignKey(u => u.RoleId);
 
-            modelBuilder.Entity<Role>().HasData(
-                new Role { Id = Guid.NewGuid(), Name = "Admin" },
-                new Role { Id = Guid.NewGuid(), Name = "Manager" },
-                new Role { Id = Guid.NewGuid(), Name = "User" }
-            );
+            
         }
     }
 }

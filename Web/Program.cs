@@ -15,6 +15,11 @@ builder.Services.AddDbContext<ApplicationDbContext>(
 builder.Services.AddScoped<IAuthorisationService, AuthorisationService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
+builder.Services.AddScoped<ISprintRepository, SprintRepository>();
+builder.Services.AddScoped<IProjectService, ProjectService>();
+
+
 
 builder.Services.AddSession(options =>
 {

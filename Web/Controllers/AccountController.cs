@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Web.Models;
+using Web.Models.AccountModels;
+using Web.Models.UserModel;
 
 namespace Web.Controllers
 {
