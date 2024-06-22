@@ -1,5 +1,5 @@
 ﻿@using Web.Models.ProjectModel
-@model IEnumerable<Web.Models.ProjectModel.ProjectViewModel>
+@model IEnumerable<ProjectSprintDto>
 
 @{
     ViewData["Title"] = "Projects";
@@ -7,36 +7,37 @@
 
 <h1>Projects</h1>
 
+<a asp-action="Create" class="btn btn-success mb-3">Create New Project</a>
+
 <table class="table">
     <thead>
         <tr>
             <th>Name</th>
             <th>Description</th>
             <th>Sprints</th>
-            <th></th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var project in Model)
+        @foreach (var projectSprint in Model)
         {
             <tr>
-                <td>@project.Name</td>
-                <td>@project.Description</td>
+                <td>@projectSprint.Project.Name</td>
+                <td>@projectSprint.Project.Description</td>
                 <td>
-                    <ul>
-                        @foreach (var sprint in project.Sprints)
+                    <select class="form-select" onchange="location = this.value;">
+                        <option value="">Select a Sprint</option>
+                        @foreach (var sprint in projectSprint.Sprints)
                         {
-                            <li>@sprint.Name (@sprint.StartDate.ToShortDateString() - @sprint.EndDate.ToShortDateString())</li>
+                            <option value="@Url.Action("Details", "Sprint", new { id = sprint.Id })">@sprint.Name</option>
                         }
-                    </ul>
+                    </select>
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@project.Id" class="btn btn-primary">Edit</a>
-                    <a asp-action="Delete" asp-route-id="@project.Id" class="btn btn-danger">Delete</a>
+                    <a asp-action="Edit" asp-route-id="@projectSprint.Project.Id" class="btn btn-primary">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@projectSprint.Project.Id" class="btn btn-danger">Delete</a>
                 </td>
             </tr>
         }
     </tbody>
 </table>
-
-<a asp-action="Create" class="btn btn-primary">Create New Project</a>

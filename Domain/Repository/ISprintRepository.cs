@@ -11,8 +11,10 @@ namespace Domain.Repository
     {
         Task<Sprint> GetByIdAsync(Guid id);
         Task<IEnumerable<Sprint>> GetAllAsync();
-        System.Threading.Tasks.Task AddAsync(Sprint sprint);
-        System.Threading.Tasks.Task UpdateAsync(Sprint sprint);
-        System.Threading.Tasks.Task DeleteAsync(Guid id);
+        Task AddAsync(Sprint sprint);
+        Task UpdateAsync(Sprint sprint);
+        Task DeleteAsync(Guid id);
+        Task<IEnumerable<Sprint>> GetAllByProjectIdAsync(Guid projectId);
+
     }
 }

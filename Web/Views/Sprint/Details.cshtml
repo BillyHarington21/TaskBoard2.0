@@ -1,0 +1,37 @@
+﻿@model Web.Models.SprintModel.SprintViewModel
+
+@{
+    ViewData["Title"] = "Details Sprint";
+}
+
+<h2>Sprint Details</h2>
+
+<table class="table table-bordered">
+    <tbody>
+        <tr>
+            <th>Name</th>
+            <td>@Model.Name</td>
+        </tr>
+        <tr>
+            <th>Description</th>
+            <td>@Model.Description</td>
+        </tr>
+        <tr>
+            <th>Start Date</th>
+            <td>@Model.StartDate.ToString("yyyy-MM-dd")</td>
+        </tr>
+        <tr>
+            <th>End Date</th>
+            <td>@Model.EndDate.ToString("yyyy-MM-dd")</td>
+        </tr>
+    </tbody>
+</table>
+
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
+    <form asp-action="DeleteConfirmed" method="post" class="d-inline">
+        <input type="hidden" asp-for="Id" />
+        <button type="submit" class="btn btn-danger">Delete</button>
+    </form>
+    <a asp-action="Index" asp-controller="Project" asp-route-projectId="@Model.ProjectId" class="btn btn-secondary">Back to Project</a>
+</div>

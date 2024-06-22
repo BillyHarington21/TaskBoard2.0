@@ -18,13 +18,13 @@ namespace Infrastracture.RealisationRepository
             _context = context;
         }
 
-        public System.Threading.Tasks.Task AddAsync(Sprint sprint)
+        public Task AddAsync(Sprint sprint)
         {
             _context.Sprints.Add(sprint);
             return _context.SaveChangesAsync();
         }
 
-        public async System.Threading.Tasks.Task DeleteAsync(Guid id)
+        public async Task DeleteAsync(Guid id)
         {
             var sprint = await _context.Sprints.FindAsync(id);
             if (sprint != null)
@@ -44,10 +44,16 @@ namespace Infrastracture.RealisationRepository
             return await _context.Sprints.FindAsync(id);
         }
 
-        public async System.Threading.Tasks.Task UpdateAsync(Sprint sprint)
+        public async Task UpdateAsync(Sprint sprint)
         {
             _context.Sprints.Update(sprint);
             await _context.SaveChangesAsync();
+        }
+        public async Task<IEnumerable<Sprint>> GetAllByProjectIdAsync(Guid projectId)
+        {
+            return await _context.Sprints
+                .Where(s => s.ProjectId == projectId)
+                .ToListAsync();
         }
     }
 

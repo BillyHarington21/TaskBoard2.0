@@ -11,7 +11,7 @@ namespace Application.DTO
         public Guid Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public List<SprintDto>? Sprints { get; set; }
+        public List<SprintDTO>? Sprints { get; set; }
     }
     public class CreatProjectDTO
     { 

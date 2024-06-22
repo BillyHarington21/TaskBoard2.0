@@ -22,7 +22,6 @@ namespace Application.Services
                 Id = project.Id,
                 Name = project.Name,
                 Description = project.Description,
-                Sprints = project.Sprints.Select(s => new SprintDto { Id = s.Id, Name = s.Name, StartDate = s.StartDate, EndDate = s.EndDate }).ToList()
             };
         }
 
@@ -33,8 +32,7 @@ namespace Application.Services
             {
                 Id = project.Id,
                 Name = project.Name,
-                Description = project.Description,
-                Sprints = project.Sprints.Select(sprint => new SprintDto { Id = sprint.Id, Name = sprint.Name, StartDate = sprint.StartDate, EndDate = sprint.EndDate }).ToList()
+                Description = project.Description                
             });
         }
 
@@ -44,8 +42,7 @@ namespace Application.Services
             {
                 Id = Guid.NewGuid(),
                 Name = projectDto.Name,
-                Description = projectDto.Description, 
-                Sprints = (ICollection<Sprint>)projectDto.Sprints.Select(sprint => new SprintDto { Id = sprint.Id, Name = sprint.Name, StartDate = sprint.StartDate, EndDate = sprint.EndDate }).ToList()
+                Description = projectDto.Description              
             };
 
             await _projectRepository.AddAsync(project);
@@ -57,8 +54,7 @@ namespace Application.Services
             {
                 Id = projectDto.Id,
                 Name = projectDto.Name,
-                Description = projectDto.Description,
-                Sprints = projectDto.Sprints.Select(s => new Sprint { Id = s.Id, Name = s.Name, StartDate = s.StartDate, EndDate = s.EndDate }).ToList()
+                Description = projectDto.Description                
             };
 
             await _projectRepository.UpdateAsync(project);

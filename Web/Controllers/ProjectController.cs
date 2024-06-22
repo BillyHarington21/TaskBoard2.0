@@ -9,31 +9,31 @@ namespace Web.Controllers
     public class ProjectController : Controller
     {
         private readonly IProjectService _projectService;
+        private readonly ISprintService _sprintService;
 
-        public ProjectController(IProjectService projectService)
+        public ProjectController(IProjectService projectService, ISprintService sprintService)
         {
             _projectService = projectService;
+            _sprintService = sprintService;
         }
+                
 
         public async Task<IActionResult> Index()
         {
             var projects = await _projectService.GetAllAsync();
-            var projectViewModels = projects.Select(project => new ProjectViewModel
-            {
-                Id = project.Id,
-                Name = project.Name,
-                Description = project.Description,
-                Sprints = project.Sprints.Select(sprint => new SprintViewModel
-                {
-                    Id = sprint.Id,
-                    Name = sprint.Name,
-                    StartDate = sprint.StartDate,
-                    EndDate = sprint.EndDate, 
-                    ProjectId = sprint.ProjectId
-                }).ToList() ?? new List<SprintViewModel>()
-            }).ToList();
+            var projectSprintDtos = new List<ProjectSprintDto>();
 
-            return View(projectViewModels);
+            foreach (var project in projects)
+            {
+                var sprints = await _sprintService.GetAllByProjectIdAsync(project.Id);
+                projectSprintDtos.Add(new ProjectSprintDto
+                {
+                    Project = project,
+                    Sprints = sprints
+                });
+            }
+
+            return View(projectSprintDtos);
         }
 
         public IActionResult Create()
@@ -51,7 +51,7 @@ namespace Web.Controllers
                 {
                     Name = projectViewModel.Name,
                     Description = projectViewModel.Description,
-                    Sprints = new List<SprintDto>()
+                    Sprints = new List<SprintDTO>()
                 };
 
                 await _projectService.AddAsync(projectDto);
@@ -73,14 +73,6 @@ namespace Web.Controllers
                 Id = project.Id,
                 Name = project.Name,
                 Description = project.Description,
-                Sprints = project.Sprints.Select(sprint => new SprintViewModel
-                {
-                    Id = sprint.Id,
-                    Name = sprint.Name,
-                    StartDate = sprint.StartDate,
-                    EndDate = sprint.EndDate,
-                    ProjectId = sprint.ProjectId
-                }).ToList() ?? new List<SprintViewModel>()
             };
 
             return View(projectViewModel);
@@ -97,14 +89,6 @@ namespace Web.Controllers
                     Id = projectViewModel.Id,
                     Name = projectViewModel.Name,
                     Description = projectViewModel.Description,
-                    Sprints = projectViewModel.Sprints.Select(sprint => new SprintDto
-                    {
-                        Id = sprint.Id,
-                        Name = sprint.Name,
-                        StartDate = sprint.StartDate,
-                        EndDate = sprint.EndDate,
-                        ProjectId = sprint.ProjectId
-                    }).ToList()
                 };
 
                 await _projectService.UpdateAsync(projectDto);
@@ -126,14 +110,6 @@ namespace Web.Controllers
                 Id = project.Id,
                 Name = project.Name,
                 Description = project.Description,
-                Sprints = project.Sprints.Select(sprint => new SprintViewModel
-                {
-                    Id = sprint.Id,
-                    Name = sprint.Name,
-                    StartDate = sprint.StartDate,
-                    EndDate = sprint.EndDate,
-                    ProjectId = sprint.ProjectId
-                }).ToList()
             };
 
             return View(projectViewModel);
