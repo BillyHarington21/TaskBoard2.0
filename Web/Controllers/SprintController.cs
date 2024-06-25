@@ -1,6 +1,8 @@
 ﻿using Application.DTO;
 using Application.Interfaces;
+using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
+using Web.Models.ProjectModel;
 using Web.Models.SprintModel;
 
 namespace Web.Controllers
@@ -8,10 +10,12 @@ namespace Web.Controllers
     public class SprintController : Controller
     {
         private readonly ISprintService _sprintService;
+        private readonly ITaskWorkService _taskWorkService;
 
-        public SprintController(ISprintService sprintService)
+        public SprintController(ISprintService sprintService, ITaskWorkService taskWorkService)
         {
             _sprintService = sprintService;
+            _taskWorkService = taskWorkService;
         }
 
         public IActionResult Create(Guid projectId)
@@ -44,19 +48,20 @@ namespace Web.Controllers
         public async Task<IActionResult> Details(Guid Id)
         {
             var sprint = await _sprintService.GetByIdAsync(Id);
+            
             if (sprint == null)
             {
                 return NotFound();
             }
-            var model = new SprintViewModel
+
+            var tasks = await _taskWorkService.GetAllBySprintIdAsync(sprint.Id);
+
+            var model = new SprintTaskDto
             {
-                Id = sprint.Id,
-                Name = sprint.Name,
-                Description = sprint.Description,
-                StartDate = sprint.StartDate,
-                EndDate = sprint.EndDate,
-                ProjectId = sprint.ProjectId
+                Sprint = sprint,
+                Tasks = tasks.ToList()
             };
+                       
             return View(model);
         }
 
@@ -102,12 +107,12 @@ namespace Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> DeleteConfirmed(Guid id)
+        public async Task<IActionResult> DeleteConfirmed(SprintTaskDto model)
         {
-            var sprint = await _sprintService.GetByIdAsync(id);
+            var sprint = await _sprintService.GetByIdAsync(model.Sprint.Id);
             if (sprint != null)
             {
-                await _sprintService.DeleteAsync(id);
+                await _sprintService.DeleteAsync(model.Sprint.Id);
                 return RedirectToAction("Index", "Project", new { projectId = sprint.ProjectId });
             }
             return RedirectToAction("Index", "Home");

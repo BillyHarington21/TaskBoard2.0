@@ -1,9 +1,4 @@
 ﻿using Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Domain.Repository
 {
@@ -14,5 +9,6 @@ namespace Domain.Repository
         Task AddAsync(TaskWork task);
         Task UpdateAsync(TaskWork task);
         Task DeleteAsync(Guid id);
+        Task<IEnumerable<TaskWork>> GetAllBySprintIdAsync(Guid sprintId);
     }
 }

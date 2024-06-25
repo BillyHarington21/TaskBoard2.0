@@ -2,11 +2,6 @@
 using Domain.Repository;
 using Infrastracture.Data;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infrastracture.RealisationRepository
 {
@@ -38,6 +33,13 @@ namespace Infrastracture.RealisationRepository
         public async Task<IEnumerable<TaskWork>> GetAllAsync()
         {
             return await _context.Tasks.ToListAsync();
+        }
+
+        public async Task<IEnumerable<TaskWork>> GetAllBySprintIdAsync(Guid sprintId) 
+        {
+            return await _context.Tasks
+                .Where(s => s.SprintId == sprintId)
+                .ToListAsync();
         }
 
         public async Task<TaskWork> GetByIdAsync(Guid id)

@@ -1,0 +1,33 @@
+﻿@model Web.Models.TaskWorkModel.TaskViewModel;
+
+@{
+    ViewData["Title"] = "Task Details";
+}
+
+<h1>Task Details</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>@Model.Name</td>
+            <td>@Model.Description</td>
+            <td>@Model.Status</td>
+        </tr>
+    </tbody>
+</table>
+
+<div class="text-end mt-3">
+    <a asp-action="EditTaskWork" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
+    <form asp-action="Delete" method="post" class="d-inline">
+        <input type="hidden" asp-for="Id" />
+        <button type="submit" class="btn btn-danger">Delete</button>
+    </form>
+    <a asp-action="Details" asp-controller="Sprint" asp-route-id="@Model.SprintId" class="btn btn-secondary">Back to Sprint</a>
+</div>

@@ -1,37 +1,48 @@
-﻿@model Web.Models.SprintModel.SprintViewModel
+﻿@model Web.Models.SprintModel.SprintTaskDto
 
 @{
     ViewData["Title"] = "Details Sprint";
 }
 
-<h2>Sprint Details</h2>
-
 <table class="table table-bordered">
     <tbody>
         <tr>
             <th>Name</th>
-            <td>@Model.Name</td>
+            <td>@Model.Sprint.Name</td>
         </tr>
         <tr>
             <th>Description</th>
-            <td>@Model.Description</td>
+            <td>@Model.Sprint.Description</td>
         </tr>
         <tr>
             <th>Start Date</th>
-            <td>@Model.StartDate.ToString("yyyy-MM-dd")</td>
+            <td>@Model.Sprint.StartDate.ToString("yyyy-MM-dd")</td>
         </tr>
         <tr>
             <th>End Date</th>
-            <td>@Model.EndDate.ToString("yyyy-MM-dd")</td>
+            <td>@Model.Sprint.EndDate.ToString("yyyy-MM-dd")</td>
+        </tr>
+        <tr>
+            <th>Tasks</th>
+            <td>
+                <select class="form-select" onchange="location = this.value;">
+                    <option value="">Select a Task</option>
+                    @foreach (var task in Model.Tasks)
+                    {
+                        <option value="@Url.Action("TaskDetails", "TaskWork", new { id = task.Id })">@task.Name</option>
+                    }
+                </select>
+                <a asp-action="CreateTask" asp-controller="TaskWork" asp-route-sprintId="@Model.Sprint.Id" class="btn btn-success">Create Task</a>
+            </td>
         </tr>
     </tbody>
 </table>
 
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
+    <a asp-action="Edit" asp-route-id="@Model.Sprint.Id" class="btn btn-primary">Edit</a>
     <form asp-action="DeleteConfirmed" method="post" class="d-inline">
-        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="Sprint.Id" value="@Model.Sprint.Id" />
         <button type="submit" class="btn btn-danger">Delete</button>
     </form>
-    <a asp-action="Index" asp-controller="Project" asp-route-projectId="@Model.ProjectId" class="btn btn-secondary">Back to Project</a>
-</div>
+    <a asp-action="Index" asp-controller="Project" asp-route-projectId="@Model.Sprint.ProjectId" class="btn btn-secondary">Back to Project</a>
+</div> 

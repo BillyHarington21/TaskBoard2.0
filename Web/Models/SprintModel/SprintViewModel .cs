@@ -1,4 +1,6 @@
-﻿namespace Web.Models.SprintModel
+﻿using Web.Models.TaskWorkModel;
+
+namespace Web.Models.SprintModel
 {
     public class SprintViewModel
     {
@@ -8,5 +10,6 @@
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public Guid ProjectId { get; set; }
+        public List<TaskViewModel>? Tasks { get; set; }
     }
 }
