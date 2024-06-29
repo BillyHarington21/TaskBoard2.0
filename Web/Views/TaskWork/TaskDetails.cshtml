@@ -12,6 +12,7 @@
             <th>Name</th>
             <th>Description</th>
             <th>Status</th>
+            <th>Images</th>
         </tr>
     </thead>
     <tbody>
@@ -19,6 +20,9 @@
             <td>@Model.Name</td>
             <td>@Model.Description</td>
             <td>@Model.Status</td>
+            <td>
+                <a asp-action="ViewImages" asp-route-taskId="@Model.Id" class="btn btn-primary">View Images</a>
+            </td>
         </tr>
     </tbody>
 </table>

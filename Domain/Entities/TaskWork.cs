@@ -14,6 +14,14 @@ namespace Domain.Entities
         public string Name { get; set; }
         public string Description { get; set; }
         public string Status { get; set; }
+        public ICollection<TaskImage>? Images { get; set; } = new List<TaskImage>();
         public ICollection<User> Users { get; set; }
+    }
+    public class TaskImage
+    {
+        public Guid Id { get; set; }
+        public string ImagePath { get; set; }
+        public Guid TaskWorkId { get; set; }
+        public TaskWork TaskWork { get; set; }
     }
 }

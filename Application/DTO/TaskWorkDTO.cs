@@ -14,6 +14,11 @@ namespace Application.DTO
         public string Name { get; set; }
         public string Description { get; set; }
         public string Status { get; set; }
-
+        public List<TaskImageDTO>? Images { get; set; } = new List<TaskImageDTO>();
+    }
+    public class TaskImageDTO
+    {
+        public Guid Id { get; set; }
+        public string ImagePath { get; set; }
     }
 }

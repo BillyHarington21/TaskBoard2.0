@@ -42,15 +42,18 @@ namespace Infrastracture.RealisationRepository
                 .ToListAsync();
         }
 
-        public async Task<TaskWork> GetByIdAsync(Guid id)
+        public async Task<TaskWork?> GetByIdAsync(Guid id)
         {
-            return await _context.Tasks.FindAsync(id);
+            return await _context.Tasks
+                               .Include(t => t.Images)
+                               .FirstOrDefaultAsync(t => t.Id == id);
         }
 
         public async Task UpdateAsync(TaskWork task)
         {
             _context.Tasks.Update(task);
             await _context.SaveChangesAsync();
+            var qwe = task.Images;
         }
 
       

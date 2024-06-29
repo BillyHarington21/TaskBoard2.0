@@ -10,6 +10,7 @@ namespace Application.Interfaces
 {
     public interface ITaskWorkService
     {
+
         Task<TaskWorkDTO> GetByIdAsync(Guid id);
         Task<IEnumerable<TaskWorkDTO>> GetAllBySprintIdAsync(Guid sprintId);
         Task<TaskWorkDTO> CreateAsync(TaskWorkDTO taskDto);

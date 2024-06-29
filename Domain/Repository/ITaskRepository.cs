@@ -4,7 +4,7 @@ namespace Domain.Repository
 {
     public interface ITaskRepository
     {
-        Task<TaskWork> GetByIdAsync(Guid id);
+        Task<TaskWork?> GetByIdAsync(Guid id);
         Task<IEnumerable<TaskWork>> GetAllAsync();
         Task AddAsync(TaskWork task);
         Task UpdateAsync(TaskWork task);

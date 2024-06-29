@@ -16,7 +16,8 @@ namespace Web.Models.TaskWorkModel
 
         [Required]
         public string Status { get; set; }
-
         public Guid SprintId { get; set; }
+        public List<IFormFile> Images { get; set; } = new List<IFormFile>();
+        public List<string>? ImagePaths { get; set; } = new List<string>();
     }
 }

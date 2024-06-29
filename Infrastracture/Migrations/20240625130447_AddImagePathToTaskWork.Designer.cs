@@ -4,6 +4,7 @@ using Infrastracture.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastracture.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240625130447_AddImagePathToTaskWork")]
+    partial class AddImagePathToTaskWork
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -86,26 +89,6 @@ namespace Infrastracture.Migrations
                     b.ToTable("Sprints");
                 });
 
-            modelBuilder.Entity("Domain.Entities.TaskImage", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("ImagePath")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("TaskWorkId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("TaskWorkId");
-
-                    b.ToTable("TaskImage");
-                });
-
             modelBuilder.Entity("Domain.Entities.TaskWork", b =>
                 {
                     b.Property<Guid>("Id")
@@ -113,6 +96,10 @@ namespace Infrastracture.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImagePath")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -192,17 +179,6 @@ namespace Infrastracture.Migrations
                     b.Navigation("Project");
                 });
 
-            modelBuilder.Entity("Domain.Entities.TaskImage", b =>
-                {
-                    b.HasOne("Domain.Entities.TaskWork", "TaskWork")
-                        .WithMany("Images")
-                        .HasForeignKey("TaskWorkId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("TaskWork");
-                });
-
             modelBuilder.Entity("Domain.Entities.TaskWork", b =>
                 {
                     b.HasOne("Domain.Entities.Sprint", "Sprint")
@@ -259,11 +235,6 @@ namespace Infrastracture.Migrations
                     b.Navigation("Tasks");
 
                     b.Navigation("Users");
-                });
-
-            modelBuilder.Entity("Domain.Entities.TaskWork", b =>
-                {
-                    b.Navigation("Images");
                 });
 #pragma warning restore 612, 618
         }

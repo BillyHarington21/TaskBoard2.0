@@ -1,0 +1,25 @@
+﻿@model Web.Models.TaskWorkModel.TaskImagesViewModel
+
+<h1>Images for Task @Model.Name</h1>
+
+<form method="post" asp-action="DeleteImages">
+    <input type="hidden" name="taskId" value="@Model.TaskId" />
+    @if (Model.ImagePaths != null && Model.ImagePaths.Any())
+    {
+        <div>
+            @for (int i = 0; i < Model.ImagePaths.Count; i++)
+            {
+                <div style="margin-bottom: 10px;">
+                    <input type="checkbox" name="ImageIds" value="@Model.ImageIds[i].ToString()" />
+                    <img src="@Url.Content("~/uploads/" + Model.ImagePaths[i])" alt="Task Image" style="max-width: 300px; margin-left: 10px;" />
+                </div>
+            }
+        </div>
+        <button type="submit" class="btn btn-danger">Delete Selected Images</button>
+    }
+    else
+    {
+        <p>No images available.</p>
+    }
+</form>
+<a asp-action="TaskDetails" asp-route-id="@Model.TaskId" class="btn btn-secondary">Back to Task Details</a>
