@@ -14,5 +14,10 @@ namespace Application.Interfaces
         Task<IEnumerable<SprintDTO>> GetAllByProjectIdAsync(Guid projectId);
         Task UpdateAsync(SprintDTO sprintDto);
         Task DeleteAsync(Guid id);
+        Task AssignUserToSprint(Guid sprintId, Guid userId);
+        Task<List<UserDTO>> GetAllUsersAsync();
+        Task<List<Guid>> GetAssignedUserIdsAsync(Guid sprintId);
+        Task RemoveUserFromSprint(Guid sprintId, Guid userId);
+        Task<IEnumerable<UserDTO>> GetAllUsersBySprintIdAsync(Guid sprintId);
     }
 }

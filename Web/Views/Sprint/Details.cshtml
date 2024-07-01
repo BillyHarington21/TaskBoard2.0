@@ -35,6 +35,17 @@
                 <a asp-action="CreateTask" asp-controller="TaskWork" asp-route-sprintId="@Model.Sprint.Id" class="btn btn-success">Create Task</a>
             </td>
         </tr>
+        <tr>
+            <th>Users</th>
+            <td>
+                <ul>
+                    @foreach (var user in Model.Users)
+                    {
+                        <li>@user.UserName</li>
+                    }
+                </ul>
+            </td>
+        </tr>
     </tbody>
 </table>
 

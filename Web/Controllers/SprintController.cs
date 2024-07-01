@@ -2,6 +2,8 @@
 using Application.Interfaces;
 using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Web.Models.ProjectModel;
 using Web.Models.SprintModel;
 
@@ -11,11 +13,13 @@ namespace Web.Controllers
     {
         private readonly ISprintService _sprintService;
         private readonly ITaskWorkService _taskWorkService;
+        private readonly IAuthorisationService _authorisationService;
 
-        public SprintController(ISprintService sprintService, ITaskWorkService taskWorkService)
+        public SprintController(ISprintService sprintService, ITaskWorkService taskWorkService, IAuthorisationService authorisationService)
         {
             _sprintService = sprintService;
             _taskWorkService = taskWorkService;
+            _authorisationService = authorisationService;
         }
 
         public IActionResult Create(Guid projectId)
@@ -53,38 +57,49 @@ namespace Web.Controllers
             {
                 return NotFound();
             }
-
             var tasks = await _taskWorkService.GetAllBySprintIdAsync(sprint.Id);
+            var users = await _sprintService.GetAllUsersBySprintIdAsync(sprint.Id); // Используем новый метод
 
             var model = new SprintTaskDto
             {
                 Sprint = sprint,
-                Tasks = tasks.ToList()
+                Tasks = tasks.ToList(),
+                Users = users.ToList() // Добавляем пользователей в модель
             };
-                       
+
             return View(model);
         }
 
         [HttpGet]
         public async Task<IActionResult> Edit(Guid id)
         {
+           
             var sprint = await _sprintService.GetByIdAsync(id);
             if (sprint == null)
             {
                 return NotFound();
             }
+
+            var assignedUserIds = sprint.AssignedUserIds;
+            var allUsers = await _sprintService.GetAllUsersAsync();
+
+            var assignedUsers = allUsers
+                .Where(u => assignedUserIds.Contains(u.Id))
+                .ToList();
+
             var model = new SprintViewModel
             {
                 Id = sprint.Id,
+                ProjectId = sprint.ProjectId,
                 Name = sprint.Name,
                 Description = sprint.Description,
                 StartDate = sprint.StartDate,
                 EndDate = sprint.EndDate,
-                ProjectId = sprint.ProjectId
+                Users = assignedUsers, // Здесь только добавленные пользователи
+                AssignedUserIds = assignedUserIds
             };
             return View(model);
         }
-
         [HttpPost]
         public async Task<IActionResult> Edit(SprintViewModel model)
         {
@@ -97,7 +112,10 @@ namespace Web.Controllers
                     Description = model.Description,
                     StartDate = model.StartDate,
                     EndDate = model.EndDate,
-                    ProjectId = model.ProjectId
+                    ProjectId = model.ProjectId,
+                    Users = model.Users.ToList(),
+                    AssignedUserIds = model.Users.Select(u => u.Id).ToList()
+
                 };
 
                 await _sprintService.UpdateAsync(dto);
@@ -116,6 +134,50 @@ namespace Web.Controllers
                 return RedirectToAction("Index", "Project", new { projectId = sprint.ProjectId });
             }
             return RedirectToAction("Index", "Home");
+        }
+        public async Task<IActionResult> SelectUsers(Guid sprintId)
+        {
+            var sprint = await _sprintService.GetByIdAsync(sprintId);
+            if (sprint == null)
+            {
+                return NotFound();
+            }
+
+            var users = await _sprintService.GetAllUsersAsync();
+            var assignedUserIds = await _sprintService.GetAssignedUserIdsAsync(sprintId);
+
+            var model = new SelectUsersViewModel
+            {
+                SprintId = sprintId,
+                Users = users.Select(u => new UserViewModel
+                {
+                    Id = u.Id,
+                    UserName = u.UserName,
+                    IsAssigned = assignedUserIds.Contains(u.Id)
+                }).ToList()
+            };
+
+            return View(model);
+        }
+        [HttpPost]
+        public async Task<IActionResult> AssignUsers(Guid sprintId, List<Guid> userIds)
+        {
+            var currentUsers = await _sprintService.GetAssignedUserIdsAsync(sprintId);
+
+            var usersToAdd = userIds.Except(currentUsers).ToList();
+            var usersToRemove = currentUsers.Except(userIds).ToList();
+
+            foreach (var userId in usersToAdd)
+            {
+                await _sprintService.AssignUserToSprint(sprintId, userId);
+            }
+
+            foreach (var userId in usersToRemove)
+            {
+                await _sprintService.RemoveUserFromSprint(sprintId, userId);
+            }
+
+            return RedirectToAction("Edit", new { id = sprintId });
         }
     }
 }

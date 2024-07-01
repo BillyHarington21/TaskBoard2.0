@@ -15,6 +15,9 @@ namespace Application.DTO
         public DateTime EndDate { get; set; }
         public Guid ProjectId { get; set; }
         public List<TaskWorkDTO>? Tasks { get; set; }
+        public ICollection<UserDTO>? Users { get; set; }
+        public List<Guid>? AssignedUserIds { get; set; }
+
     }
 
 }

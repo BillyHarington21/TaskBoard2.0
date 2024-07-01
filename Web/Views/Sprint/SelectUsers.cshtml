@@ -1,0 +1,29 @@
+﻿@model Web.Models.SprintModel.SelectUsersViewModel
+
+<h1>Select Users for Sprint</h1>
+
+<form method="post" asp-action="AssignUsers">
+    <input type="hidden" name="SprintId" value="@Model.SprintId" />
+    <table class="table">
+        <thead>
+            <tr>
+                <th>User</th>
+                <th>Select</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Model.Users)
+            {
+                <tr>
+                    <td>@user.UserName</td>
+                    <td>
+                        <input type="checkbox" name="UserIds" value="@user.Id" @(user.IsAssigned ? "checked" : "") />
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <button type="submit" class="btn btn-primary">Save</button>
+</form>
+
+<a asp-action="Edit" asp-route-id="@Model.SprintId" class="btn btn-secondary">Back to Sprint</a>

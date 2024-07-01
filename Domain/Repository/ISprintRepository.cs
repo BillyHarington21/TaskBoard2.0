@@ -15,6 +15,9 @@ namespace Domain.Repository
         Task UpdateAsync(Sprint sprint);
         Task DeleteAsync(Guid id);
         Task<IEnumerable<Sprint>> GetAllByProjectIdAsync(Guid projectId);
-
+        Task<IEnumerable<User>> GetAllUsersAsync();
+        Task AddSprintUserAsync(SprintUser sprintUser);
+        Task RemoveSprintUserAsync(Guid sprintId, Guid userId);
+        Task<IEnumerable<User>> GetUsersBySprintIdAsync(Guid sprintId);
     }
 }

@@ -1,4 +1,5 @@
-﻿using Web.Models.TaskWorkModel;
+﻿using Application.DTO;
+using Web.Models.TaskWorkModel;
 
 namespace Web.Models.SprintModel
 {
@@ -11,5 +12,7 @@ namespace Web.Models.SprintModel
         public DateTime EndDate { get; set; }
         public Guid ProjectId { get; set; }
         public List<TaskViewModel>? Tasks { get; set; }
+        public List<UserDTO>? Users { get; set; } 
+        public List<Guid>? AssignedUserIds { get; set; } 
     }
 }

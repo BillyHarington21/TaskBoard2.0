@@ -15,30 +15,37 @@
             <table class="table">
                 <thead>
                     <tr>
-                        <th style="width: 20%;">Name</th>
-                        <th style="width: 40%;">Description</th>
-                        <th style="width: 15%;">Start Date</th>
-                        <th style="width: 15%;">End Date</th>
-                        <th style="width: 10%;">Actions</th>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Actions</th>
+                        <th>Users</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td>
-                            <input asp-for="Name" class="form-control form-control-lg" />
+                            <input asp-for="Name" class="form-control form-control" />
                             <span asp-validation-for="Name" class="text-danger"></span>
                         </td>
                         <td>
-                            <input asp-for="Description" class="form-control form-control-lg" />
+                            <input asp-for="Description" class="form-control form-control" />
                             <span asp-validation-for="Description" class="text-danger"></span>
                         </td>
                         <td>
-                            <input asp-for="StartDate" class="form-control form-control-lg" type="date" />
+                            <input asp-for="StartDate" class="form-control form-control" type="date" />
                             <span asp-validation-for="StartDate" class="text-danger"></span>
                         </td>
                         <td>
-                            <input asp-for="EndDate" class="form-control form-control-lg" type="date" />
+                            <input asp-for="EndDate" class="form-control form-control" type="date" />
                             <span asp-validation-for="EndDate" class="text-danger"></span>
+                        </td>                       
+                        <td>
+                            <div>
+                                <select asp-for="AssignedUserIds" asp-items="@(new SelectList(Model.Users, "Id", "UserName"))" class="form-control" multiple></select>
+                            </div>
+                            <a asp-action="SelectUsers" asp-controller="Sprint" asp-route-sprintId="@Model.Id" class="btn btn-info">Add Users</a>
                         </td>
                         <td class="align-middle">
                             <input type="hidden" asp-for="Id" />
