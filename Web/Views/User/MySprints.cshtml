@@ -1,0 +1,32 @@
+﻿@using Web.Models.ForCurrentUserModel
+@model IEnumerable<CurrentUserSprintModel>
+<h2>Your sprints</h2>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Название Спринта</th>
+            <th>Описание</th>
+            <th>Задачи</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var sprintModel in Model)
+        {
+            <tr>
+                <td>@sprintModel.SprintDTOs.Name</td>
+                <td>@sprintModel.SprintDTOs.Description</td>
+                <td>
+                    <select class="form-select" onchange="location = this.value;">
+                        <option value="">Выберите Задачу</option>
+                        @foreach (var task in sprintModel.TaskWorkDTOs)
+                        {
+                            <option value="@Url.Action("TaskDetails", "TaskWork", new { id = task.Id })">@task.Name</option>
+                        }
+                    </select>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

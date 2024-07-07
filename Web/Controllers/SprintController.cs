@@ -105,6 +105,19 @@ namespace Web.Controllers
         {
             if (ModelState.IsValid)
             {
+                var sprint = await _sprintService.GetByIdAsync(model.Id);
+                if (sprint == null)
+                {
+                    return NotFound();
+                }
+
+                var assignedUserIds = sprint.AssignedUserIds;
+                var allUsers = await _sprintService.GetAllUsersAsync();
+
+                var assignedUsers = allUsers
+                    .Where(u => assignedUserIds.Contains(u.Id))
+                    .ToList();
+
                 var dto = new SprintDTO
                 {
                     Id = model.Id,
@@ -113,8 +126,8 @@ namespace Web.Controllers
                     StartDate = model.StartDate,
                     EndDate = model.EndDate,
                     ProjectId = model.ProjectId,
-                    Users = model.Users.ToList(),
-                    AssignedUserIds = model.Users.Select(u => u.Id).ToList()
+                    Users = assignedUsers, // Здесь только добавленные пользователи
+                    AssignedUserIds = assignedUserIds
 
                 };
 

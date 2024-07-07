@@ -12,11 +12,13 @@ namespace Web.Controllers
     {
         private readonly ITaskWorkService _taskService;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly ISprintService _sprintService;
 
-        public TaskWorkController(ITaskWorkService taskService, IWebHostEnvironment webHostEnvironment)
+        public TaskWorkController(ITaskWorkService taskService, IWebHostEnvironment webHostEnvironment, ISprintService sprintService)
         {
             _taskService = taskService;
             _webHostEnvironment = webHostEnvironment;
+            _sprintService = sprintService;
         }
 
         
@@ -27,7 +29,17 @@ namespace Web.Controllers
             {
                 return NotFound();
             }
-
+            var user = _taskService.GetUserAsync(task.AssignedUserId);
+            string userEmail;
+            if (task.AssignedUserId == Guid.Empty)
+            {
+                userEmail = string.Empty;
+            }
+            else
+            {
+                userEmail = user?.Result.UserName;
+            }
+            
             var model = new TaskViewModel
             {
                 Id = task.Id,
@@ -35,7 +47,9 @@ namespace Web.Controllers
                 Description = task.Description,
                 Status = task.Status,
                 SprintId = task.SprintId,
-                ImagePaths = task.Images.Select(img => img.ImagePath).ToList()
+                ImagePaths = task.Images.Select(img => img.ImagePath).ToList(),
+                AssignedUserId = task.AssignedUserId,
+                AssignedUserName = userEmail
             };
 
             return View(model);
@@ -88,7 +102,7 @@ namespace Web.Controllers
             return View(model);
         }
 
-        
+        [HttpGet]
         public async Task<IActionResult> EditTaskWork(Guid id)
         {
             var task = await _taskService.GetByIdAsync(id);
@@ -97,6 +111,8 @@ namespace Web.Controllers
                 return NotFound();
             }
 
+            var sprintUsers = await _sprintService.GetAllUsersBySprintIdAsync(task.SprintId);
+
             var model = new TaskViewModel
             {
                 Id = task.Id,
@@ -104,13 +120,14 @@ namespace Web.Controllers
                 Description = task.Description,
                 Status = task.Status,
                 SprintId = task.SprintId,
-                ImagePaths = task.Images.Select(img => img.ImagePath).ToList()
+                ImagePaths = task.Images.Select(img => img.ImagePath).ToList(),
+                AssignedUserId = task.AssignedUserId,
+                SprintUsers = sprintUsers.ToList()
             };
 
             return View(model);
         }
 
-        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditTaskWork(TaskViewModel model, List<IFormFile> Images)
@@ -136,14 +153,19 @@ namespace Web.Controllers
                     Description = model.Description,
                     Status = model.Status,
                     SprintId = model.SprintId,
-                    Images = allImageDtos
+                    Images = allImageDtos,
+                    AssignedUserId = model.AssignedUserId.GetValueOrDefault(),
                 };
 
                 await _taskService.UpdateAsync(taskDto);
-                return RedirectToAction("TaskDetails", "TaskWork", new { id = model.Id}); 
+                return RedirectToAction("TaskDetails", "TaskWork", new { id = model.Id });
             }
+
+            // Повторно запрашиваем список пользователей для отображения в случае ошибки
+            var sprintUsers = await _sprintService.GetAllUsersBySprintIdAsync(model.SprintId);
+            model.SprintUsers = sprintUsers.ToList();
             return View(model);
-        }        
+        }
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(Guid id)

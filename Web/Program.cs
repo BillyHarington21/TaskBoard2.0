@@ -10,6 +10,8 @@ var ConnectionStrings = builder.Configuration.GetConnectionString("default");
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+builder.Services.AddHttpContextAccessor();
+
 builder.Services.AddDbContext<ApplicationDbContext>(
     options => options.UseSqlServer(ConnectionStrings));
 builder.Services.AddScoped<IAuthorisationService, AuthorisationService>();

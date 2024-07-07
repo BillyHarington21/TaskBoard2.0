@@ -8,10 +8,12 @@ namespace Application.Services
     public class TaskWorkService : ITaskWorkService
     {
         private readonly ITaskRepository _taskRepository;
+        private readonly IUserRepository _userRepository;
 
-        public TaskWorkService(ITaskRepository taskRepository)
+        public TaskWorkService(ITaskRepository taskRepository, IUserRepository userRepository)
         {
             _taskRepository = taskRepository;
+            _userRepository = userRepository;
         }
 
         public async Task<TaskWorkDTO> CreateAsync(TaskWorkDTO taskDto)
@@ -23,7 +25,8 @@ namespace Application.Services
                 Description = taskDto.Description,
                 Status = taskDto.Status,
                 SprintId = taskDto.SprintId,
-                Images = taskDto.Images.Select(imgDto => new TaskImage { ImagePath = imgDto.ImagePath }).ToList()
+                Images = taskDto.Images.Select(imgDto => new TaskImage { ImagePath = imgDto.ImagePath }).ToList(),
+                UserId = Guid.Empty
             };
 
             await _taskRepository.AddAsync(task);
@@ -35,7 +38,8 @@ namespace Application.Services
                 Description = task.Description,
                 Status = task.Status,
                 SprintId = task.SprintId,
-                Images = task.Images.Select(img => new TaskImageDTO { ImagePath = img.ImagePath }).ToList()
+                Images = task.Images.Select(img => new TaskImageDTO { ImagePath = img.ImagePath }).ToList(),
+                AssignedUserId = taskDto.AssignedUserId
             };
         }
 
@@ -53,7 +57,8 @@ namespace Application.Services
                 Description = task.Description,
                 Status = task.Status,
                 SprintId = task.SprintId,
-                Images = task.Images.Select(img => new TaskImageDTO { ImagePath = img.ImagePath }).ToList()
+                Images = task.Images.Select(img => new TaskImageDTO { ImagePath = img.ImagePath }).ToList(),
+                AssignedUserId  = task.UserId  
             };
         }
 
@@ -67,7 +72,8 @@ namespace Application.Services
                 Description = task.Description,
                 Status = task.Status,
                 SprintId = task.SprintId,
-                Images = task.Images.Select(img => new TaskImageDTO { ImagePath = img.ImagePath }).ToList()
+                Images = task.Images.Select(img => new TaskImageDTO { ImagePath = img.ImagePath }).ToList(),
+                AssignedUserId = task.UserId
             });
         }
 
@@ -79,6 +85,21 @@ namespace Application.Services
             task.Name = taskDto.Name;
             task.Description = taskDto.Description;
             task.Status = taskDto.Status;
+            task.UserId = taskDto.AssignedUserId;
+            // Обновляем привязанного пользователя
+            if (taskDto.AssignedUserId != null)
+            {
+                var user = await _userRepository.GetByIdAsync(taskDto.AssignedUserId);
+                if (user != null)
+                {
+                    task.User = user;
+                }
+            }
+            else
+            {
+                task.User = null; // Удаляем пользователя, если AssignedUserId = null
+            }
+
             var imagesToRemove = task.Images.Where(img => !taskDto.Images.Any(dto => dto.ImagePath == img.ImagePath)).ToList();
             foreach (var image in imagesToRemove)
             {
@@ -106,7 +127,20 @@ namespace Application.Services
                 await _taskRepository.DeleteAsync(id);
             }
         }
-        
+        public async Task<UserDTO> GetUserAsync(Guid? id)
+        {
+            var user = await _userRepository.GetByIdAsync(id);
+            if (user != null)
+            {
+                return new UserDTO
+                {
+                    Id = user.Id,
+                    UserName = user.Email
+                };
+            }
+            return null;
+        }
+       
     }
 }
 

@@ -3,10 +3,12 @@ using Application.Interfaces;
 using Domain.Entities;
 using Domain.Repository;
 using Infrastracture.RealisationRepository;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -16,11 +18,13 @@ namespace Application.Services
     {
         private readonly ISprintRepository _sprintRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public SprintService(ISprintRepository sprintRepository, IUserRepository userRepository)
+        public SprintService(ISprintRepository sprintRepository, IUserRepository userRepository, IHttpContextAccessor httpContextAccessor)
         {
             _sprintRepository = sprintRepository;
             _userRepository = userRepository;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<SprintDTO> CreateAsync(SprintDTO sprintDto)
@@ -64,7 +68,7 @@ namespace Application.Services
                 StartDate = sprint.StartDate,
                 EndDate = sprint.EndDate,
                 ProjectId = sprint.ProjectId,
-                AssignedUserIds = sprint.Users?.Select(u => u.Id).ToList() ?? new List<Guid>()
+                AssignedUserIds = sprint.User?.Select(u => u.Id).ToList() ?? new List<Guid>()
             };
         }
 
@@ -77,7 +81,7 @@ namespace Application.Services
                 Name = sprint.Name,
                 StartDate = sprint.StartDate,
                 EndDate = sprint.EndDate,
-                Users = sprint.Users?.Select(user => new UserDTO
+                Users = sprint.User?.Select(user => new UserDTO
                 {
                     Id = user.Id,
                     UserName = user.Email,
@@ -105,7 +109,7 @@ namespace Application.Services
                 var user = await _userRepository.GetByIdAsync(userId);
                 if (user != null)
                 {
-                    sprint.Users.Add(user);
+                    sprint.User.Add(user);
                 }
             }
 
@@ -126,14 +130,14 @@ namespace Application.Services
 
             if (sprint != null && user != null)
             {
-                if (sprint.Users == null)
+                if (sprint.User == null)
                 {
-                    sprint.Users = new List<User>();
+                    sprint.User = new List<User>();
                 }
 
-                if (!sprint.Users.Any(u => u.Id == userId))
+                if (!sprint.User.Any(u => u.Id == userId))
                 {
-                    sprint.Users.Add(user);
+                    sprint.User.Add(user);
 
                     // Попытка добавления записи в таблицу связей
                     try
@@ -165,16 +169,29 @@ namespace Application.Services
                 
             }).ToList();
         }
+       
+        public async Task<IEnumerable<SprintDTO>> GetSprintsByUserIdAsync(Guid userId)
+        {
+            var sprints = await _sprintRepository.GetSprintsByUserIdAsync(userId);
+            return sprints.Select(sprint => new SprintDTO
+            {
+                Id = sprint.Id,
+                Name = sprint.Name,
+                Description = sprint.Description,
+                Tasks = (List<TaskWorkDTO>)sprint.Tasks
+            });
+        }
         public async Task RemoveUserFromSprint(Guid sprintId, Guid userId)
         {
             var sprint = await _sprintRepository.GetByIdAsync(sprintId);
             if (sprint != null)
             {
-                var user = sprint.Users.FirstOrDefault(u => u.Id == userId);
+                var user = sprint.User.FirstOrDefault(u => u.Id == userId);
                 if (user != null)
                 {
-                    sprint.Users.Remove(user);
+                    sprint.User.Remove(user);
                     await _sprintRepository.RemoveSprintUserAsync(sprintId, userId);
+                    await _userRepository.RemoveSprintUserAsync(sprintId);
                     await _sprintRepository.UpdateAsync(sprint);
                 }
             }
@@ -187,7 +204,7 @@ namespace Application.Services
                 return new List<Guid>();
             }
 
-            return sprint.Users.Select(u => u.Id).ToList();
+            return sprint.User.Select(u => u.Id).ToList();
         }
         public async Task<IEnumerable<UserDTO>> GetAllUsersBySprintIdAsync(Guid sprintId)
         {
@@ -198,7 +215,7 @@ namespace Application.Services
                 UserName = u.Email
                 // Добавьте здесь другие необходимые свойства
             });
-
+            var useres = userDtos;
             return userDtos;
         }
     }

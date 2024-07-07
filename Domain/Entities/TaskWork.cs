@@ -15,7 +15,9 @@ namespace Domain.Entities
         public string Description { get; set; }
         public string Status { get; set; }
         public ICollection<TaskImage>? Images { get; set; } = new List<TaskImage>();
-        public ICollection<User> Users { get; set; }
+        public Guid? UserId { get; set; }
+        public User? User { get; set; }
+       
     }
     public class TaskImage
     {
@@ -24,4 +26,5 @@ namespace Domain.Entities
         public Guid TaskWorkId { get; set; }
         public TaskWork TaskWork { get; set; }
     }
+
 }

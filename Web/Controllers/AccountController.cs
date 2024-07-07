@@ -1,6 +1,7 @@
 ﻿using Application.DTO;
 using Application.Interfaces;
 using Application.Services;
+using Domain.Entities;
 using Domain.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -72,8 +73,15 @@ namespace Web.Controllers
                     if (response != null )
                     {
                         HttpContext.Session.SetString("UserEmail", response.Email);
-                        HttpContext.Session.SetString("UserRole", response.RoleId.ToString()); 
-                        return RedirectToAction("Index", "Home");
+                        HttpContext.Session.SetString("UserRole", response.RoleId.ToString());
+                        var user = _userRepository.GetByEmailAsync(response.Email);
+                        HttpContext.Session.SetString("UserId", user.Result.Id.ToString());
+                        if (response.RoleId.ToString() == "5c200f10-64fc-48bb-a0a8-8f6008a124fa" || response.RoleId.ToString() == "26407a59-8b7f-4c0f-a534-edb962195abe")
+                        {
+                            return RedirectToAction("Index", "Project");
+                        }
+                        else return RedirectToAction("MySprints", "user");
+                            
                     }
                     else if ( response.IsBlocked == true )
                     {

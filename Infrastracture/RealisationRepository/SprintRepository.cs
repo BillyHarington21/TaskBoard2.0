@@ -42,7 +42,7 @@ namespace Infrastracture.RealisationRepository
         public async Task<Sprint> GetByIdAsync(Guid id)
         {
             return await _context.Sprints
-                             .Include(s => s.Users)
+                             .Include(s => s.User)
                              .FirstOrDefaultAsync(s => s.Id == id);
         }
 
@@ -84,10 +84,16 @@ namespace Infrastracture.RealisationRepository
         public async Task<IEnumerable<User>> GetUsersBySprintIdAsync(Guid sprintId)
         {
             var sprint = await _context.Sprints
-                .Include(s => s.Users)
+                .Include(s => s.User)
                 .FirstOrDefaultAsync(s => s.Id == sprintId);
 
-            return sprint?.Users ?? new List<User>();
+            return sprint?.User ?? new List<User>();
+        }
+        public async Task<IEnumerable<Sprint>> GetSprintsByUserIdAsync(Guid userId)
+        {
+            return await _context.Sprints
+                .Where(s => s.SprintUsers.Any(su => su.UserId == userId))
+                .ToListAsync();
         }
     }
 

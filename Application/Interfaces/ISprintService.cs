@@ -1,4 +1,5 @@
 ﻿using Application.DTO;
+using Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,5 +20,6 @@ namespace Application.Interfaces
         Task<List<Guid>> GetAssignedUserIdsAsync(Guid sprintId);
         Task RemoveUserFromSprint(Guid sprintId, Guid userId);
         Task<IEnumerable<UserDTO>> GetAllUsersBySprintIdAsync(Guid sprintId);
+        Task<IEnumerable<SprintDTO>> GetSprintsByUserIdAsync(Guid userId);
     }
 }

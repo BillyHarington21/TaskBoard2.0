@@ -4,6 +4,7 @@ using Infrastracture.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastracture.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240704005511_AddUserToTask")]
+    partial class AddUserToTask
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -38,7 +41,7 @@ namespace Infrastracture.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Projects", (string)null);
+                    b.ToTable("Projects");
                 });
 
             modelBuilder.Entity("Domain.Entities.Role", b =>
@@ -53,7 +56,7 @@ namespace Infrastracture.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Roles", (string)null);
+                    b.ToTable("Roles");
                 });
 
             modelBuilder.Entity("Domain.Entities.Sprint", b =>
@@ -83,7 +86,7 @@ namespace Infrastracture.Migrations
 
                     b.HasIndex("ProjectId");
 
-                    b.ToTable("Sprints", (string)null);
+                    b.ToTable("Sprints");
                 });
 
             modelBuilder.Entity("Domain.Entities.SprintUser", b =>
@@ -98,7 +101,7 @@ namespace Infrastracture.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("SprintUsers", (string)null);
+                    b.ToTable("SprintUsers");
                 });
 
             modelBuilder.Entity("Domain.Entities.TaskImage", b =>
@@ -118,7 +121,7 @@ namespace Infrastracture.Migrations
 
                     b.HasIndex("TaskWorkId");
 
-                    b.ToTable("TaskImage", (string)null);
+                    b.ToTable("TaskImage");
                 });
 
             modelBuilder.Entity("Domain.Entities.TaskWork", b =>
@@ -151,7 +154,7 @@ namespace Infrastracture.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Tasks", (string)null);
+                    b.ToTable("Tasks");
                 });
 
             modelBuilder.Entity("Domain.Entities.User", b =>
@@ -183,7 +186,7 @@ namespace Infrastracture.Migrations
 
                     b.HasIndex("SprintId");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("Domain.Entities.Sprint", b =>

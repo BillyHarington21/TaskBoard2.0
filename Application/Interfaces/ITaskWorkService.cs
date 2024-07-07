@@ -16,5 +16,7 @@ namespace Application.Interfaces
         Task<TaskWorkDTO> CreateAsync(TaskWorkDTO taskDto);
         Task UpdateAsync(TaskWorkDTO taskDto);
         Task DeleteAsync(Guid id);
+        Task<UserDTO> GetUserAsync(Guid? id);
+        
     }
 }

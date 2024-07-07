@@ -9,17 +9,36 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="EditTaskWork" method="post" enctype="multipart/form-data">         
+        <form asp-action="EditTaskWork" method="post" enctype="multipart/form-data">
+           
+            
             <div class="form-group">
                 <label asp-for="Name"></label>
-                <input asp-for="Name" class="form-control" />
+                @if (Context.Session.GetString("UserRole")?.ToString() == "5c200f10-64fc-48bb-a0a8-8f6008a124fa" || Context.Session.GetString("UserRole")?.ToString() == "26407a59-8b7f-4c0f-a534-edb962195abe")
+                {
+                    <input asp-for="Name" class="form-control" />
+                }
+                else
+                {
+                    <input asp-for="Name" class="form-control" readonly />
+                    <small class="form-text text-muted">У вас нет прав на изменение этого поля.</small>
+                }
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Description"></label>
-                <input asp-for="Description" class="form-control" />
+                @if (Context.Session.GetString("UserRole")?.ToString() == "5c200f10-64fc-48bb-a0a8-8f6008a124fa" || Context.Session.GetString("UserRole")?.ToString() == "26407a59-8b7f-4c0f-a534-edb962195abe")
+                {
+                    <input asp-for="Description" class="form-control" />
+                }
+                else
+                {
+                    <input asp-for="Description" class="form-control" readonly />
+                    <small class="form-text text-muted">У вас нет прав на изменение этого поля.</small>
+                }
                 <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
+                </div>
+            
             <div class="form-group">
                 <label asp-for="Status"></label>
                 <input asp-for="Status" class="form-control" />
@@ -29,6 +48,24 @@
                 <label asp-for="Images"></label>
                 <input type="file" asp-for="Images" class="form-control" multiple />
                 <span asp-validation-for="Images" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AssignedUserId" class="control-label"></label>
+                @if (Context.Session.GetString("UserRole")?.ToString() == "5c200f10-64fc-48bb-a0a8-8f6008a124fa" || Context.Session.GetString("UserRole")?.ToString() == "26407a59-8b7f-4c0f-a534-edb962195abe")
+                {
+                    <select asp-for="AssignedUserId" class="form-control" asp-items="@(new SelectList(Model.SprintUsers, "Id", "UserName"))">
+                        <option value="">Select a User</option>
+                    </select>
+                }
+                else
+                {
+                    <select asp-for="AssignedUserId" class="form-control" asp-items="@(new SelectList(Model.SprintUsers, "Id", "UserName"))" disabled>
+                        <option value="">Select a User</option>
+                    </select>
+                    <input type="hidden" asp-for="AssignedUserId" />
+                    <small class="form-text text-muted">У вас нет прав на изменение этого поля.</small>
+                }
+                <span asp-validation-for="AssignedUserId" class="text-danger"></span>
             </div>
             <input type="hidden" asp-for="Id" />
             <input type="hidden" asp-for="SprintId" />

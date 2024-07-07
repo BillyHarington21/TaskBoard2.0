@@ -20,7 +20,7 @@ namespace Infrastracture.RealisationRepository
             await _context.SaveChangesAsync();
         }
 
-        public async Task<User> GetByIdAsync(Guid id)
+        public async Task<User> GetByIdAsync(Guid? id)
         {
             return await _context.Users.FindAsync(id);
         }
@@ -38,6 +38,17 @@ namespace Infrastracture.RealisationRepository
         public async Task<IEnumerable<User>> GetAllAsync()
         {
             return await _context.Users.Include(u => u.Role).ToListAsync();
+        }
+        public async Task RemoveSprintUserAsync(Guid sprintId)
+        {
+            var sprintUser = await _context.SprintUsers
+               .FirstOrDefaultAsync(su => su.SprintId == sprintId);
+
+            if (sprintUser != null)
+            {
+                _context.SprintUsers.Remove(sprintUser);
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }

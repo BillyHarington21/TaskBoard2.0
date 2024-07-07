@@ -31,6 +31,11 @@ namespace Infrastracture.Data
                 .WithMany(u => u.SprintUsers)
                 .HasForeignKey(su => su.UserId);
 
+            modelBuilder.Entity<TaskWork>()
+                .HasOne(t => t.User)
+                .WithMany(u => u.Tasks)
+                .HasForeignKey(t => t.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
 
         }
     }
